@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Channel-Flipping Universe — How Technologies Arrive, Survive, and Disappear</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0f0e0c;
+    --paper: #f5f0e8;
+    --accent: #1a3a5c;
+    --muted: #7a7060;
+    --rule: #d4c9b0;
+    --highlight: #dce6f0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-weight: 300;
+    line-height: 1.8;
+  }
+
+  /* Language switcher */
+  .lang-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--ink);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    border-bottom: 3px solid var(--accent);
+  }
+
+  .lang-btn {
+    padding: 12px 32px;
+    background: transparent;
+    border: none;
+    color: #888;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-right: 1px solid #222;
+  }
+
+  .lang-btn:last-child { border-right: none; }
+
+  .lang-btn.active {
+    color: var(--paper);
+    background: var(--accent);
+  }
+
+  .lang-btn:hover:not(.active) { color: var(--paper); }
+
+  /* Content panels */
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* Article layout */
+  .article {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  /* Header */
+  .kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .kicker::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .deck {
+    font-size: 19px;
+    font-weight: 300;
+    line-height: 1.6;
+    color: #3a3530;
+    border-left: 3px solid var(--accent);
+    padding-left: 20px;
+    margin-bottom: 40px;
+  }
+
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+
+  .byline-dot { color: var(--rule); }
+
+  /* Body text */
+  p {
+    font-size: 17px;
+    margin-bottom: 24px;
+    color: #1a1814;
+  }
+
+  p:first-of-type::first-letter {
+    font-family: 'Playfair Display', serif;
+    font-size: 68px;
+    font-weight: 900;
+    float: left;
+    line-height: 0.85;
+    margin: 4px 12px -4px 0;
+    color: var(--accent);
+  }
+
+  /* Section headers */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    margin: 52px 0 20px;
+    padding-top: 52px;
+    border-top: 2px solid var(--ink);
+    line-height: 1.2;
+  }
+
+  h2 .num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    display: block;
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+  }
+
+  /* Pullquote */
+  blockquote {
+    margin: 40px -20px;
+    padding: 28px 28px 28px 32px;
+    background: var(--highlight);
+    border-left: 4px solid var(--accent);
+    font-family: 'Playfair Display', serif;
+    font-size: 21px;
+    font-style: italic;
+    line-height: 1.5;
+    color: #2a2520;
+  }
+
+  blockquote cite {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    font-style: normal;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-top: 12px;
+  }
+
+  /* Stat callout */
+  .stat-box {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 40px 0;
+  }
+
+  .stat {
+    background: var(--paper);
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+
+  /* Tier list / six-roles box */
+  .role-grid {
+    margin: 40px 0;
+    border: 1px solid var(--rule);
+  }
+
+  .role-item {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .role-item:last-child { border-bottom: none; }
+
+  .role-num {
+    background: var(--ink);
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .role-body {
+    padding: 18px 20px;
+    background: var(--paper);
+  }
+
+  .role-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 6px;
+  }
+
+  .role-body p {
+    font-size: 15px;
+    margin-bottom: 0;
+    color: #2a2520;
+  }
+
+  .role-body p::first-letter { all: unset; font-size: 15px; }
+
+  /* Divider */
+  .divider {
+    text-align: center;
+    margin: 40px 0;
+    color: var(--muted);
+    letter-spacing: 12px;
+    font-size: 10px;
+  }
+
+  /* Conclusion box */
+  .conclusion {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 36px 32px;
+    margin-top: 52px;
+  }
+
+  .conclusion h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    color: #f0e8d8;
+  }
+
+  .conclusion p {
+    color: #c8c0b0;
+    font-size: 15px;
+    margin-bottom: 12px;
+  }
+
+  .conclusion p:first-of-type::first-letter { all: unset; font-size: 15px; }
+
+  /* Tags */
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* Portfolio note */
+  .portfolio-note {
+    background: #f0f0f0;
+    border: 1px dashed #bbb;
+    padding: 16px 20px;
+    margin: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1px;
+    color: #666;
+    text-align: center;
+  }
+
+  @media (max-width: 600px) {
+    .article { padding: 40px 20px 80px; }
+    blockquote { margin: 32px 0; }
+    .byline { gap: 8px; font-size: 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="portfolio-note">⚡ PORTFOLIO SAMPLE — Philosophical Essay / Философское эссе</div>
+
+<div class="lang-bar">
+  <button class="lang-btn active" onclick="switchLang('en')">🇬🇧 English</button>
+  <button class="lang-btn" onclick="switchLang('ru')">🇷🇺 Русский</button>
+</div>
+
+<!-- ===== ENGLISH ===== -->
+<div id="panel-en" class="panel active">
+<article class="article">
+
+  <div class="kicker">Essay · Technology History · Philosophy of Progress</div>
+
+  <h1>The <em>Channel-Flipping</em> Universe: Why Some Technologies Stay Forever and Others Vanish Overnight</h1>
+
+  <p class="deck">History does not advance in a straight line. It flips channels — accelerating through noise, pausing on signal, and occasionally rewinding entire civilizations. The question is not whether technology will change the world. It is who pays the price when it does.</p>
+
+  <div class="byline">
+    <span>Philosophical Essay</span>
+    <span class="byline-dot">·</span>
+    <span>Technology Cycles & Human Progress</span>
+    <span class="byline-dot">·</span>
+    <span>2026</span>
+  </div>
+
+  <p>Has anyone noticed how quickly events begin to accelerate across the world — not just in science, not just in technology, but everywhere at once? How swiftly one set of ideas replaces another. How rapidly theories and hypotheses are proposed and then disappear from the headlines just as fast. In the 19th century, astronomers terrified entire populations with newly discovered comets — each one announced as the imminent destroyer of all human life. Serious scientific journals and tabloids alike ran the same headlines. Governments pivoted overnight, abandoning promises made weeks earlier. What does this mean? Why does life itself — and seemingly the universe along with it — begin to flip through certain periods of time as though searching for a particular page, then freeze again for two or three hundred years?</p>
+
+  <p>It is like having a television with fifteen hundred channels, and the person holding the remote is not looking for entertainment — they are searching for a specific broadcast that has not yet begun. So they flip, relentlessly, without stopping. Hoping to land on the right channel before anyone else does. Impatience? Restlessness? Or something more structural — the universe itself running a search algorithm across time?</p>
+
+  <h2><span class="num">01 · THE PATTERN</span>Acceleration, Freeze, Repeat</h2>
+
+  <p>This pattern has played out at every century's turn, every shift of epoch, every crossing of millennia. It preceded the invention of gunpowder and the mass destruction it enabled. It surrounded the rise of the steam engine, the internal combustion engine, the first automobiles, tractors, tanks, aircraft, ocean-going vessels. The splitting of the atom. Every time, the acceleration continued until humanity exhausted all possible combinations — until every conceivable way of crossing, hybridizing, and recombining the available technologies had been tried by every company and every individual who had access to them.</p>
+
+  <p>Then something settled. A technology won. Or rather — a technology stayed. Not because it was perfect, but because it was good enough, available enough, and survivable enough to become part of the furniture of daily life.</p>
+
+  <blockquote>
+    "Some technologies stay forever. Others pass so quickly that almost no one notices. The difference is not always about which technology was better."
+    <cite>— Author's reflection</cite>
+  </blockquote>
+
+  <h2><span class="num">02 · THE SURVIVORS</span>Photography, Radio, and the Furniture of Civilization</h2>
+
+  <p>Consider photography. In the 19th and early 20th centuries, it provoked the full spectrum of human reaction. Some feared it religiously and sought to ban it. Others turned it into a livelihood. Some found scientific applications. And some used it in ways that now seem strange: the widespread practice of photographing the recently deceased alongside their living relatives — a desperate attempt to freeze a moment, to preserve a face against the erasure of time.</p>
+
+  <p>And yet photography did not disappear. It did not pass like a comet. It merged, evolved, and eventually absorbed an entire civilization's visual life — into cinema, into gaming, into virtual reality, into digital design, into the AI models now trained on billions of images. In the 21st century we call it "digital," but the lineage runs unbroken from a man in a darkroom in 1839.</p>
+
+  <p>Radio followed the same arc. Disputed between Marconi, Popov, and Tesla — each continent claiming its own father of the technology — radio found its footing not through a single decisive victory but through irreversibility. Once the infrastructure existed, once frequencies were allocated and receivers multiplied, removing radio from human life became unthinkable. Today we live inside radio: GSM, Bluetooth, Wi-Fi, 5G are all radio. We breathe it without knowing it.</p>
+
+  <div class="stat-box">
+    <div class="stat">
+      <div class="stat-num">~180</div>
+      <div class="stat-label">Years since the first photograph — technology still expanding</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~130</div>
+      <div class="stat-label">Years of radio — now invisible inside every device we own</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~125</div>
+      <div class="stat-label">Years of the internal combustion engine — still dominant</div>
+    </div>
+  </div>
+
+  <h2><span class="num">03 · THE TRANSITIONAL</span>The Steam Engine as a Cautionary Mirror</h2>
+
+  <p>But for every technology that stayed, there are many that served as a bridge and then were crossed and forgotten. The steam engine is the clearest example. At the turn of the 20th century, steam was everything: ships, locomotives, factories, pumps. Entire professional worlds were built around its maintenance, its fuel, its physics. And then — remarkably quickly in historical terms — the internal combustion engine arrived and rewrote the terms.</p>
+
+  <p>Here is what is rarely noted about that transition: steam did not lose simply because internal combustion was more powerful. It lost partly because steam was more dangerous. The physics of pressurized boilers meant that failures were catastrophic and instantaneous. Workers were scalded by bursting pipes, killed by exploding boilers, maimed by escaping steam that had nowhere to go but through them. There were no workplace insurance schemes. There were no safety regulators worth the name. The price of steam's dominance was paid in bodies.</p>
+
+  <p>One small artifact of that era survived: the samovar. A domestic steam vessel, reduced to the humble purpose of boiling water for tea. A relic of the age of steam, sitting on kitchen tables across Russia and Central Asia, utterly unaware of its own historical significance.</p>
+
+  <blockquote>
+    "The transitional technology is not a failure. It is a necessary sacrifice — the scaffolding that makes the building possible, then gets taken down."
+    <cite>— Author's reflection</cite>
+  </blockquote>
+
+  <h2><span class="num">04 · THE HYPOTHESIS</span>Six Categories of People — and Why Their Absence Kills Technology</h2>
+
+  <p>Here is the central claim of this essay: technology does not live or die on its own merits. It lives or dies on the presence — or absence — of specific categories of human beings at a specific moment in time. If the right people are not there in sufficient numbers, even a correct and functional technology will freeze, go underground, or disappear into someone's handwritten notebook — to be rediscovered decades later, or never.</p>
+
+  <p>These six categories are not job titles. They are roles in a cycle that repeats with every significant technological shift in human history.</p>
+
+  <div class="role-grid">
+    <div class="role-item">
+      <div class="role-num">I</div>
+      <div class="role-body">
+        <div class="role-title">The Archivists & Theorists</div>
+        <p>Historians, philosophers, writers, chroniclers, science fiction authors, folklorists. Those who work with old information — reading, reflecting, drawing hypotheses from the record. Without them, no one knows what has already been tried and what has already failed. Every era re-invents the wheel when this category is absent or marginalized.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">II</div>
+      <div class="role-body">
+        <div class="role-title">The Researchers & Inventors</div>
+        <p>Those who test hypotheses against reality. Note: inventors and entrepreneurs are not the same as businessmen — they differ in mental architecture, in how they perceive risk, in what they are willing to sacrifice. Henry Ford was in this category. So was Nikola Tesla. So were many who died unknown.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">III</div>
+      <div class="role-body">
+        <div class="role-title">The Recognizers of Value</div>
+        <p>In the 20th century, these were called the "scientific community." In the 21st century, that institution is dissolving — replaced by investors, by grant committees, by attention itself. Those who understand what research is worth, and back it with resources: money, time, access, protection. Without them, the work of Category II goes nowhere.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">IV</div>
+      <div class="role-body">
+        <div class="role-title">The Engineers of Translation</div>
+        <p>Those who can take a proven principle and make it work in the physical world at scale. In the 20th century they were called engineers. In the 21st century they are sometimes called "engineers of the future" — a term that is, at minimum, debatable. What matters is the function: bridging the gap between working prototype and civilizational deployment.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">V</div>
+      <div class="role-body">
+        <div class="role-title">The Testers</div>
+        <p>Those who run the trials — maximum and minimum, edge cases and everyday conditions — and who can describe everything they find. Pilots. Safety evaluators. People who discover the critical thresholds that no simulation can predict. Their work is unglamorous. It is also irreplaceable. The data they generate is the only data that actually matters.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">VI</div>
+      <div class="role-body">
+        <div class="role-title">The Users</div>
+        <p>The last to arrive — and the ones who close the loop. The everyday people who absorb a technology into daily life, generate feedback, expose the failures that controlled trials missed, and slowly produce the next generation of Category I. Without this category, there is no civilization. There is only a laboratory.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>The cycle then begins again — with changed parameters, with new data, with the accumulated record of what happened when Category VI encountered the technology in real conditions. And the categories that are hardest to replenish are not the engineers. They are Categories I and V: the people who remember, and the people who honestly report what they find.</p>
+
+  <h2><span class="num">05 · THE ACCELERATION</span>When the Cycle Breaks Down</h2>
+
+  <p>When this cycle cannot complete — when one or more categories are absent in sufficient numbers — something predictable happens. The universe, as it were, starts flipping channels faster. Unemployment rises as automation replaces the previous generation's skills. Water and food shortages create territorial disputes. Mass migrations begin. Political parties multiply, each with its own narrative and its own enemy. The language of "cancel culture" and "escape" (escapism) dominates discourse. Media spending on narrative control reaches historic highs. Weapons are brandished. Class inequality reaches peaks it has not seen in decades. Countries and corporations form alliances. Politicians begin rewriting history — a reliable sign that those in power know they cannot justify the present.</p>
+
+  <p>Corruption, in this environment, is not a moral failure. It is a structural symptom. When the legitimate channels for converting knowledge into value are blocked, value finds illegitimate channels. When Category III — the recognizers of value — are replaced by political gatekeepers, the real work goes underground or abroad.</p>
+
+  <blockquote>
+    "Even with electricity — and even without it, in the age of kerosene lamps and civilizational setbacks — if there is no one who can describe what was built, the technology becomes useless. Without the word, the machine is just metal."
+    <cite>— Author's reflection</cite>
+  </blockquote>
+
+  <h2><span class="num">06 · THE QUESTION</span>Will the 21st Century Cross Its Own Billion?</h2>
+
+  <p>Every major technology in human history has extracted a body count during its transition period. Gunpowder and firearms. Poison gas and industrial chemistry. The internal combustion engine with its decades of unguarded roads and no seatbelts. Nuclear energy with its tests and accidents and near-misses. The automobile alone has killed more than a hundred million people since its invention — more than most wars.</p>
+
+  <p>The digital era has not yet had its large visible disaster. But the conditions for one are being assembled. AI systems trained on incomplete data. Autonomous vehicles navigating spaces they do not fully understand. Air taxis operating in three-dimensional urban environments without the centuries of accumulated safety knowledge that ground transport has. Financial systems so interconnected that a single point of failure can cascade globally in milliseconds.</p>
+
+  <p>The question is not whether the 21st century will have its catastrophic transition moment. History suggests it will. The question is whether enough people from all six categories are present — and whether the channels of communication between them remain open — to ensure that the transition produces a technology that stays, rather than one that simply leaves a mark.</p>
+
+  <div class="stat-box">
+    <div class="stat">
+      <div class="stat-num">&gt;100M</div>
+      <div class="stat-label">Estimated deaths from automobile accidents since 1885</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Major technologies that emerged without a transitional body count</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">?</div>
+      <div class="stat-label">Whether AI systems will break this pattern or confirm it</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <h2><span class="num">07 · THE POSITION OF WRITING</span>Why Literature Outlasts Everything</h2>
+
+  <p>One institution survives every technological cycle intact: writing. Not journalism, which serves power. Not propaganda, which serves narrative. Independent literature — the kind that stands above technology, above politics, above science and religion alike.</p>
+
+  <p>Some say power and money are what ultimately control the world. Some say weapons. Some say religion, or science, or electricity. But even electricity — and without it, even by kerosene lamplight in the ruins of a collapsed civilization — a technology without someone who can describe it becomes useless within a generation. The word is the only carrier that survives the collapse of every other medium.</p>
+
+
+
+  <div class="conclusion">
+    <h3>The Only Honest Conclusion</h3>
+    <p>Technology does not arrive. It is carried — by specific people, in specific roles, in specific numbers, at specific moments. When those people are missing, technology freezes. When they are present but cannot communicate, it fragments. When the cycle completes, something stays — and the universe pauses on that channel for a generation or two.</p>
+    <p>The question for the 21st century is not which technology will win. It is whether we can build the conditions under which the full cycle completes — without the body count that every previous cycle has required. History says this is unlikely. But history was written by people who lived through the transitions that nearly didn't work.</p>
+    <p>Someone has to write about the ones that do.</p>
+  </div>
+
+  <div class="tags">
+    <span class="tag">Technology History</span>
+    <span class="tag">Philosophy of Progress</span>
+    <span class="tag">Innovation Cycles</span>
+    <span class="tag">Human Capital</span>
+    <span class="tag">Steam Engine</span>
+    <span class="tag">Digital Transition</span>
+    <span class="tag">Air Mobility</span>
+    <span class="tag">Future</span>
+  </div>
+
+</article>
+</div>
+
+<!-- ===== RUSSIAN ===== -->
+<div id="panel-ru" class="panel">
+<article class="article">
+
+  <div class="kicker">Эссе · История технологий · Философия прогресса</div>
+
+  <h1>Вселенная <em>переключает каналы:</em> почему одни технологии остаются навсегда, а другие исчезают за ночь</h1>
+
+  <p class="deck">История движется не по прямой. Она листает каналы — ускоряясь в шуме, замирая на сигнале и иногда откатываясь назад на целые цивилизации. Вопрос не в том, изменят ли технологии мир. Вопрос в том, кто заплатит цену, когда они это сделают.</p>
+
+  <div class="byline">
+    <span>Философское эссе</span>
+    <span class="byline-dot">·</span>
+    <span>Технологические циклы и человеческий прогресс</span>
+    <span class="byline-dot">·</span>
+    <span>2026</span>
+  </div>
+
+  <p>Кто-нибудь замечал, как быстро начинают ускоряться события по всему миру — не только в науке и технологиях, но везде и сразу? Как стремительно сменяются идеи. Как молниеносно выдвигаются теории и так же быстро исчезают из заголовков. В 19 веке астрономы массово пугали население кометами — каждая новая объявлялась неминуемым уничтожителем человечества. Серьёзные научные издания и жёлтая пресса публиковали одни и те же заголовки. Правительства разворачивались за ночь, забывая обещания, данные неделю назад. Что это значит? Почему сама жизнь — и, кажется, вместе с ней вся вселенная — начинает листать определённые периоды, словно ищет нужную страницу, а потом снова замирает на двести-триста лет?</p>
+
+  <p>Это похоже на телевизор с полутора тысячами каналов, где человек с пультом ищет не развлечение, а конкретную передачу, которая ещё не началась. Поэтому он листает — неустанно, без остановки. Надеясь попасть на нужный канал раньше других. Нетерпение? Беспокойство? Или что-то более структурное — вселенная, запускающая алгоритм поиска во времени?</p>
+
+  <h2><span class="num">01 · ЗАКОНОМЕРНОСТЬ</span>Ускорение, заморозка, повтор</h2>
+
+  <p>Эта закономерность повторялась на каждом переломе столетий, каждой смене эпох, каждом переходе тысячелетий. Она предшествовала изобретению пороха и массовому уничтожению, которое он принёс. Она сопровождала рождение парового двигателя, двигателя внутреннего сгорания, первых автомобилей, тракторов, танков, самолётов, морских судов. Расщепление атома. Каждый раз ускорение продолжалось до тех пор, пока человечество не исчерпывало все возможные комбинации — пока каждый мыслимый способ скрещивания, гибридизации и переработки доступных технологий не был испробован каждой компанией и каждым человеком, у кого был к ним доступ.</p>
+
+  <p>Затем что-то устанавливалось. Технология побеждала. Вернее — оставалась. Не потому что была совершенной, а потому что была достаточно хороша, достаточно доступна и достаточно безопасна для выживания, чтобы стать частью повседневной жизни.</p>
+
+  <blockquote>
+    «Одни технологии остаются навсегда. Другие проносятся так быстро, что их почти никто не замечает. Разница не всегда в том, какая технология была лучше.»
+    <cite>— Авторское наблюдение</cite>
+  </blockquote>
+
+  <h2><span class="num">02 · ВЫЖИВШИЕ</span>Фотография, радио и мебель цивилизации</h2>
+
+  <p>Возьмём фотографию. В 19 и начале 20 века она вызывала весь спектр человеческих реакций. Одни боялись её религиозно и добивались запрета. Другие делали из неё образ жизни. Третьи находили научное применение. А некоторые использовали её так, что сегодня это кажется странным: широко распространённая практика фотографирования покойников рядом с живыми родственниками — отчаянная попытка остановить момент, сохранить лицо от стирания временем.</p>
+
+  <p>И всё же фотография не исчезла. Она не пролетела кометой. Она слилась, эволюционировала и в итоге поглотила всю визуальную жизнь цивилизации — в кино, в игровой индустрии, в виртуальной реальности, в цифровом дизайне, в ИИ-моделях, которые сегодня обучаются на миллиардах изображений. В 21 веке мы называем это «диджитал», но родословная тянется непрерывно от человека в тёмной комнате в 1839 году.</p>
+
+  <p>Радио прошло тот же путь. Оспариваемое между Маркони, Поповым и Теслой — каждый континент претендовал на собственного отца технологии — радио утвердилось не через одну решающую победу, а через необратимость. Как только инфраструктура возникла, как только частоты были распределены и приёмники размножились, убрать радио из человеческой жизни стало немыслимым. Сегодня мы живём внутри радио: GSM, Bluetooth, Wi-Fi, 5G — всё это радио. Мы дышим им, не замечая этого.</p>
+
+  <div class="stat-box">
+    <div class="stat">
+      <div class="stat-num">~180</div>
+      <div class="stat-label">Лет с первой фотографии — технология продолжает расширяться</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~130</div>
+      <div class="stat-label">Лет радио — теперь невидимое внутри каждого устройства</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">~125</div>
+      <div class="stat-label">Лет двигателю внутреннего сгорания — по-прежнему доминирует</div>
+    </div>
+  </div>
+
+  <h2><span class="num">03 · ПЕРЕХОДНАЯ</span>Паровой двигатель как поучительное зеркало</h2>
+
+  <p>Но на каждую технологию, которая осталась, приходится множество тех, что послужили мостом — и были пройдены и забыты. Паровой двигатель — наагляднейший пример. На рубеже 20 века пар был всем: корабли, локомотивы, заводы, насосы. Целые профессиональные миры строились вокруг его обслуживания, его топлива, его физики. А потом — поразительно быстро по историческим меркам — пришёл двигатель внутреннего сгорания и переписал все правила.</p>
+
+  <p>Вот что редко отмечается в этом переходе: паровой двигатель проиграл не просто потому, что внутреннее сгорание было мощнее. Он проиграл отчасти потому, что пар был опаснее. Физика котлов под давлением означала, что отказы были катастрофическими и мгновенными. Рабочих ошпаривали лопнувшие трубы, убивали взрывающиеся котлы, калечил горячий пар, которому некуда было вырваться кроме как сквозь них. Страховых компаний в привычном смысле не было. Регуляторов безопасности — тоже. Цену господства пара платили телами.</p>
+
+  <p>Один маленький артефакт той эпохи выжил: самовар. Домашний паровой сосуд, сведённый к скромной задаче кипятить воду для чая. Реликт века пара, стоящий на кухонных столах по всей России и Центральной Азии, совершенно не осознающий собственной исторической значимости.</p>
+
+  <blockquote>
+    «Переходная технология — не провал. Это необходимая жертва — строительные леса, которые делают здание возможным, а потом разбираются.»
+    <cite>— Авторское наблюдение</cite>
+  </blockquote>
+
+  <h2><span class="num">04 · ГИПОТЕЗА</span>Шесть категорий людей — и почему их отсутствие убивает технологию</h2>
+
+  <p>Вот центральный тезис этого эссе: технология живёт и умирает не по своим собственным достоинствам. Она живёт и умирает в зависимости от присутствия — или отсутствия — конкретных категорий людей в конкретный момент времени. Если нужных людей недостаточно, даже верная и работающая технология замёрзнет, уйдёт в подполье или исчезнет в чьей-то рукописной тетради — чтобы быть переоткрытой через десятилетия, или никогда.</p>
+
+  <p>Эти шесть категорий — не должности. Это роли в цикле, который повторяется с каждым значимым технологическим сдвигом в истории человечества.</p>
+
+  <div class="role-grid">
+    <div class="role-item">
+      <div class="role-num">I</div>
+      <div class="role-body">
+        <div class="role-title">Архивисты и теоретики</div>
+        <p>Историки, философы, писатели, хронисты, научные фантасты, фольклористы. Те, кто работает со старой информацией — читает, размышляет, строит гипотезы на основе записей. Без них никто не знает, что уже пробовали и что уже провалилось. Каждая эпоха заново изобретает колесо, когда эта категория отсутствует или маргинализирована.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">II</div>
+      <div class="role-body">
+        <div class="role-title">Исследователи и изобретатели</div>
+        <p>Те, кто проверяет гипотезы о реальности. Важно: изобретатели и предприниматели — не то же самое, что бизнесмены. Они отличаются архитектурой мышления, восприятием риска, готовностью к жертвам. Генри Форд был из этой категории. Никола Тесла тоже. Как и многие, кто умер неизвестным.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">III</div>
+      <div class="role-body">
+        <div class="role-title">Распознаватели ценности</div>
+        <p>В 20 веке их называли «научным сообществом». В 21 веке этот институт растворяется — его заменяют инвесторы, грантовые комитеты, само внимание как ресурс. Те, кто понимает, чего стоит исследование, и поддерживает его ресурсами: деньгами, временем, доступом, защитой. Без них работа Категории II никуда не движется.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">IV</div>
+      <div class="role-body">
+        <div class="role-title">Инженеры перевода</div>
+        <p>Те, кто берёт доказанный принцип и заставляет его работать в физическом мире в масштабе. В 20 веке их называли инженерами. В 21 веке иногда говорят «инженеры будущего» — термин, по меньшей мере, спорный. Важна функция: заполнение разрыва между работающим прототипом и цивилизационным внедрением.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">V</div>
+      <div class="role-body">
+        <div class="role-title">Испытатели</div>
+        <p>Те, кто проводит испытания — максимальные и минимальные, крайние случаи и повседневные условия — и способен описать всё что находит. Пилоты. Оценщики безопасности. Люди, обнаруживающие критические пороги, которые никакая симуляция не предскажет. Их работа не гламурна. Она незаменима. Данные, которые они генерируют — единственные данные, которые действительно имеют значение.</p>
+      </div>
+    </div>
+    <div class="role-item">
+      <div class="role-num">VI</div>
+      <div class="role-body">
+        <div class="role-title">Пользователи</div>
+        <p>Последние, кто приходит — и те, кто замыкает цикл. Обычные люди, впитывающие технологию в повседневную жизнь, генерирующие обратную связь, обнаруживающие сбои, которые контролируемые испытания пропустили, и медленно производящие следующее поколение Категории I. Без этой категории нет цивилизации. Есть только лаборатория.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>Затем цикл начинается снова — с изменёнными параметрами, новыми данными, накопленной записью того, что произошло, когда Категория VI встретилась с технологией в реальных условиях. И категории, которые труднее всего восполнить, — не инженеры. Это Категории I и V: люди, которые помнят, и люди, которые честно сообщают о том, что находят.</p>
+
+  <h2><span class="num">05 · УСКОРЕНИЕ</span>Когда цикл ломается</h2>
+
+  <p>Когда этот цикл не может завершиться — когда одна или несколько категорий отсутствуют в достаточном количестве — происходит нечто предсказуемое. Вселенная, так сказать, начинает листать каналы быстрее. Растёт безработица по мере того, как автоматизация вытесняет навыки предыдущего поколения. Нехватка воды и продовольствия порождает территориальные споры. Начинаются массовые миграции. Политические партии множатся, каждая со своим нарративом и своим врагом. Язык «культуры отмены» и эскапизма доминирует в дискурсе. Расходы на контроль нарративов достигают исторических максимумов. Бряцание оружием. Классовое неравенство достигает пиков, невиданных десятилетиями. Страны и корпорации формируют союзы. Политики начинают переписывать историю — верный признак того, что те, кто у власти, знают: настоящее оправдать невозможно.</p>
+
+  <p>Коррупция в этой среде — не моральный провал. Это структурный симптом. Когда законные каналы конвертации знания в ценность заблокированы, ценность находит незаконные каналы. Когда Категорию III — распознавателей ценности — заменяют политические привратники, реальная работа уходит в подполье или за рубеж.</p>
+
+  <blockquote>
+    «Даже при наличии электричества — и даже без него, в эпоху керосиновых ламп и откатов цивилизации — если нет тех, кто может описать построенное, технология становится бесполезной в течение поколения. Без слова машина — просто металл.»
+    <cite>— Авторское наблюдение</cite>
+  </blockquote>
+
+  <h2><span class="num">06 · ВОПРОС</span>Перешагнёт ли 21 век собственный миллиард?</h2>
+
+  <p>Каждая крупная технология в истории человечества собирала свою смертную жатву в переходный период. Порох и стрелковое оружие. Ядовитый газ и промышленная химия. Двигатель внутреннего сгорания с его десятилетиями незащищённых дорог и отсутствием ремней безопасности. Ядерная энергия с её испытаниями, авариями и едва избегнутыми катастрофами. Один только автомобиль убил более ста миллионов человек с момента своего изобретения — больше, чем большинство войн.</p>
+
+  <p>У цифровой эпохи пока не было своей крупной видимой катастрофы. Но условия для неё создаются. ИИ-системы, обученные на неполных данных. Автономные транспортные средства, навигирующие в пространствах, которые они не до конца понимают. Аэротакси, работающие в трёхмерной городской среде без столетий накопленных знаний о безопасности, которыми располагает наземный транспорт. Финансовые системы настолько взаимосвязанные, что единственная точка отказа может каскадировать глобально за миллисекунды.</p>
+
+  <p>Вопрос не в том, будет ли у 21 века свой катастрофический переходный момент. История говорит — будет. Вопрос в том, достаточно ли людей из всех шести категорий присутствует — и остаются ли открытыми каналы коммуникации между ними — чтобы переход породил технологию, которая останется, а не просто оставит след.</p>
+
+  <div class="stat-box">
+    <div class="stat">
+      <div class="stat-num">&gt;100М</div>
+      <div class="stat-label">Приблизительное число погибших в авариях с участием автомобилей с 1885 года</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Крупных технологий, появившихся без переходной цены в человеческих жизнях</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">?</div>
+      <div class="stat-label">Нарушат ли ИИ-системы этот паттерн или подтвердят его</div>
+    </div>
+  </div>
+
+  <div class="divider">· · ·</div>
+
+  <h2><span class="num">07 · ПОЗИЦИЯ СЛОВА</span>Почему литература переживает всё</h2>
+
+  <p>Один институт выживает в каждом технологическом цикле нетронутым: письменность. Не журналистика, которая служит власти. Не пропаганда, которая служит нарративу. Независимая литература — та, что стоит выше технологий, выше политики, выше науки и религии.</p>
+
+  <p>Одни говорят, что власть и деньги в конечном счёте управляют миром. Другие — оружие. Третьи — религия, или наука, или электричество. Но даже с электричеством — и даже без него, при керосиновых лампах в руинах рухнувшей цивилизации — технология без того, кто может её описать, становится бесполезной в течение поколения. Слово — единственный носитель, переживающий крушение всех остальных.</p>
+
+
+
+  <div class="conclusion">
+    <h3>Единственный честный вывод</h3>
+    <p>Технология не приходит сама по себе. Её несут — конкретные люди, в конкретных ролях, в конкретном количестве, в конкретные моменты. Когда этих людей нет, технология замерзает. Когда они есть, но не могут общаться между собой, она фрагментируется. Когда цикл завершается, что-то остаётся — и вселенная замирает на этом канале на поколение-другое.</p>
+    <p>Вопрос 21 века не в том, какая технология победит. Вопрос в том, сможем ли мы создать условия, при которых полный цикл завершится — без той цены в человеческих жизнях, которую потребовал каждый предыдущий цикл. История говорит, что это маловероятно. Но история была написана людьми, пережившими переходы, которые едва не сорвались.</p>
+    <p>Кто-то должен писать о тех, которые всё-таки сработали.</p>
+  </div>
+
+  <div class="tags">
+    <span class="tag">История технологий</span>
+    <span class="tag">Философия прогресса</span>
+    <span class="tag">Циклы инноваций</span>
+    <span class="tag">Человеческий капитал</span>
+    <span class="tag">Паровой двигатель</span>
+    <span class="tag">Цифровой переход</span>
+    <span class="tag">Воздушная мобильность</span>
+    <span class="tag">Будущее</span>
+  </div>
+
+</article>
+</div>
+
+<div class="contact-footer">
+  <span id="footer-en" class="footer-text">Have a project or an open question? Let's talk →&nbsp;<a href="https://www.alcorit.space/" target="_blank">alcorit.space</a></span>
+  <span id="footer-ru" class="footer-text" style="display:none">Есть проект или незакрытый вопрос? Напишите →&nbsp;<a href="https://www.alcorit.space/" target="_blank">alcorit.space</a></span>
+</div>
+
+<style>
+.contact-footer {
+  background: var(--ink);
+  border-top: 3px solid var(--accent);
+  text-align: center;
+  padding: 18px 24px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: #aaa;
+}
+.contact-footer a {
+  color: #8ab4d4;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232,201,160,0.4);
+  transition: color 0.2s;
+}
+.contact-footer a:hover { color: #fff; }
+</style>
+
+<script>
+function switchLang(lang) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + lang).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('footer-en').style.display = lang === 'en' ? 'inline' : 'none';
+  document.getElementById('footer-ru').style.display = lang === 'ru' ? 'inline' : 'none';
+}
+</script>
+
+</body>
+</html>
